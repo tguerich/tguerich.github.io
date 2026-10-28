@@ -17,3 +17,43 @@ html {
 .page__content { line-height: 1.7; }
 .page__content p, .page__content li { font-size: 1em; }
 .archive__item-excerpt { font-size: 0.85em; }
+
+/* ---- Bible study typography (poetry, Hebrew, Greek, footnotes) ---- */
+$hebrew-font: "SBL Hebrew", "Ezra SIL", "Noto Serif Hebrew", "Taamey Frank CLM", "Times New Roman", serif;
+$greek-font: "SBL Greek", "Gentium Plus", "Noto Serif", "Times New Roman", serif;
+
+[lang="he"] { font-family: $hebrew-font; font-size: 1.12em; line-height: 1.5; }
+[lang="grc"], .scripture { font-family: $greek-font; }
+
+.study-subtitle { font-size: 1.1em; color: #555; margin-bottom: 0.2em; }
+.study-byline { font-size: 0.9em; color: #555; }
+
+/* Psalm text set as poetry: q1 lines at the margin, q2 lines indented,
+   long lines wrap with a hanging indent (like the Word document). */
+.poem { margin: 1em 0 1.5em; font-family: Georgia, "Times New Roman", serif; }
+.poem p { margin: 0; line-height: 1.55; }
+.poem .q1 { padding-left: 2.4em; text-indent: -2.4em; }
+.poem .q2 { padding-left: 2.4em; text-indent: -1.2em; }
+.poem .vs { margin-top: 0.45em; }
+.poem .vnum, .scripture .vnum { font-size: 0.65em; color: #2e4a6b; font-weight: bold; margin-right: 0.3em; }
+.poem.literal { margin-left: 1.2em; }
+
+.hebrew-verse { text-align: center; font-size: 1.45em; line-height: 1.9; margin: 1em 0 1.2em; }
+.hebrew-verse sup { font-size: 0.5em; }
+
+blockquote.scripture { font-style: normal; border-left-color: #2e4a6b; margin-right: 0; }
+blockquote.scripture p { margin-bottom: 0.6em; }
+.scripture .src { font-size: 0.75em; color: #666; font-style: normal; }
+
+.table-wrap { overflow-x: auto; margin-bottom: 1.2em; }
+.table-wrap table { display: table; font-size: 0.8em; margin-bottom: 0; }
+.word-table th { background: #e6ebf1; color: #2e4a6b; }
+.word-table td.he { font-size: 1.35em; text-align: right; white-space: nowrap; }
+.word-table th.he { text-align: right; }
+.word-table td.translit { font-style: italic; white-space: nowrap; }
+.compare-table th { background: #e6ebf1; color: #2e4a6b; white-space: nowrap; vertical-align: top; }
+.compare-table td.greek { font-size: 1.15em; }
+
+.footnotes { color: #444; }
+.footnotes ol, .footnotes li, .footnotes p { font-size: 0.8em; }
+.footnotes li p { font-size: 1em; }

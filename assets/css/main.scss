@@ -57,3 +57,135 @@ blockquote.scripture p { margin-bottom: 0.6em; }
 .footnotes { color: #444; }
 .footnotes ol, .footnotes li, .footnotes p { font-size: 0.8em; }
 .footnotes li p { font-size: 1em; }
+
+/* ==========================================================================
+   Dark mode: follow the reader's system preference.
+   Minimal Mistakes 4.26.2 has no built-in light/dark switching (skins are
+   compiled at build time), so the "air" skin stays the light look and this
+   block re-colors everything when the OS/browser asks for dark.
+   ========================================================================== */
+:root { color-scheme: light dark; }
+
+$dm-bg: #1d2128;            // page background
+$dm-bg-raised: #262b33;     // boxes: TOC, table headers, inline code, dropdowns
+$dm-bg-deep: #15181d;       // footer
+$dm-text: #dfe2e6;
+$dm-muted: #aab2bd;
+$dm-border: #3c434d;
+$dm-link: #8cc8ec;
+$dm-link-hover: #b9ddf3;
+$dm-link-visited: #b0a8e0;
+$dm-primary: #2aa7d9;
+$dm-accent: #9cc3ea;        // replaces the #2e4a6b navy used in light mode
+
+@media screen and (prefers-color-scheme: dark) {
+  html { background-color: $dm-bg; }
+  body { color: $dm-text; }
+  ::selection { color: #000; background: $dm-link-hover; }
+
+  a { color: $dm-link; }
+  a:visited { color: $dm-link-visited; }
+  a:hover { color: $dm-link-hover; }
+  u, ins, abbr[title] { border-bottom-color: $dm-text; }
+  hr { border-top-color: $dm-border; }
+  figcaption, .help-block, .help-inline { color: $dm-muted; }
+  blockquote { border-left-color: $dm-primary; }
+
+  /* Masthead / navigation */
+  .masthead { border-bottom-color: $dm-border; }
+  .greedy-nav { background: $dm-bg; }
+  .greedy-nav a, .greedy-nav a:hover, .site-title, .masthead__menu-item a { color: $dm-text; }
+  .greedy-nav .visible-links a:before { background: $dm-primary; }
+  .greedy-nav .hidden-links { background: $dm-bg-raised; border-color: $dm-border; }
+  .greedy-nav .hidden-links:before { border-color: $dm-border transparent; }
+  .greedy-nav .hidden-links:after { border-color: $dm-bg-raised transparent; }
+  .greedy-nav .hidden-links li { border-bottom-color: $dm-border; }
+  .greedy-nav .hidden-links a:hover { color: $dm-text; background: $dm-border; }
+  .greedy-nav__toggle:before { background-color: $dm-bg; }
+  .navicon, .navicon:before, .navicon:after { background: $dm-primary; }
+  .search__toggle { color: $dm-primary; }
+  .search__toggle:hover { color: $dm-link-hover; }
+  .search-content { background-color: $dm-bg; }
+  .search-content .search-input { color: $dm-text; }
+
+  /* Forms */
+  form { background-color: $dm-bg-raised; }
+  form legend, label { color: $dm-text; }
+  input, textarea, select { color: $dm-text; background-color: $dm-bg-raised; border-color: $dm-border; }
+  select { background-color: $dm-bg-raised; }
+
+  /* Sidebar / author profile */
+  .author__urls {
+    background: $dm-bg-raised; border-color: $dm-border;
+    @include breakpoint($large) { background: transparent; }
+  }
+  .author__urls:before { border-color: $dm-border transparent; }
+  .author__urls:after { border-color: $dm-bg-raised transparent; }
+  .author__avatar img { border-color: $dm-border; }
+  .social-icons .fas, .social-icons .fab, .social-icons .far, .social-icons .fal,
+  .social-icons .fa-github, .social-icons .fa-github-alt, .social-icons .fa-github-square,
+  .author__urls.social-icons .svg-inline--fa { color: $dm-text; }
+  .btn--inverse, .btn--inverse:visited { background-color: $dm-bg-raised; color: $dm-text; border-color: $dm-border; }
+  .btn--inverse:hover { background-color: $dm-border; color: $dm-text; }
+
+  /* Page chrome */
+  .page__title a { color: $dm-text; }
+  .page__meta, .comment__date, .taxonomy__title, .taxonomy__count,
+  .archive__subtitle, .back-to-top { color: $dm-muted; }
+  .page__content h2, .archive__subtitle, .page__share, .page__related,
+  .page__comments-title, .feature__wrapper, .taxonomy__index a,
+  .taxonomy__section:not(:last-child), .nav__sub-title { border-color: $dm-border; }
+  .page__taxonomy-item { border-color: $dm-border; }
+  .page__taxonomy-item:hover { color: $dm-link-hover; }
+  .page__content + .pagination, .page__meta + .pagination, .page__share + .pagination,
+  .page__comments + .pagination { border-top-color: $dm-border; }
+  .pagination li a, .pagination--pager { color: $dm-text; border-color: $dm-border; }
+  .pagination li a:hover { color: $dm-link-hover; }
+  .pagination li a.current, .pagination li a.current.disabled { color: #fff; background: $dm-primary; }
+  .pagination li a.disabled, .pagination--pager.disabled { color: rgba($dm-text, 0.45); }
+  .pagination--pager:hover { background-color: $dm-border; color: #fff; }
+
+  /* Table of contents box */
+  .toc { color: $dm-muted; background-color: $dm-bg-raised; border-color: $dm-border; box-shadow: none; }
+  .toc .nav__title { color: #fff; background: #1f6f93; }
+  .toc__menu a { color: $dm-text; border-bottom-color: $dm-border; }
+  .toc__menu a:hover { color: $dm-link-hover; }
+  .toc .active a { background-color: #1f3a4a; color: #fff; }
+
+  /* Footer (the air skin's bright blue band) */
+  .page__footer { background-color: $dm-bg-deep; color: $dm-muted !important; border-top: 1px solid $dm-border; }
+  .page__footer a { color: $dm-link; }
+  .page__footer .fas, .page__footer .fab, .page__footer .far, .page__footer .fal,
+  .page__footer-follow .social-icons .svg-inline--fa { color: $dm-muted; }
+
+  /* Code */
+  :not(pre) > code { background: $dm-bg-raised; color: $dm-text; }
+  div.highlighter-rouge, figure.highlight { background: #15181d; }
+
+  /* Tables */
+  thead { background-color: $dm-bg-raised; border-bottom-color: $dm-border; }
+  td { border-bottom-color: $dm-border; }
+
+  /* Notices */
+  .notice, .notice--primary, .notice--info, .notice--warning, .notice--success, .notice--danger {
+    color: $dm-text; background-color: $dm-bg-raised; box-shadow: none;
+  }
+  .notice code, .notice--primary code, .notice--info code, .notice--warning code,
+  .notice--success code, .notice--danger code { background-color: $dm-bg; }
+  .notice a { color: $dm-link; }
+
+  .modal { background: $dm-bg-raised; border-color: $dm-border; }
+  .well { background-color: $dm-bg-raised; border-color: $dm-border; }
+  .screen-reader-text:focus, .screen-reader-shortcut:focus { background: $dm-bg-raised; color: $dm-text; }
+
+  /* Footnotes */
+  .footnote, .footnotes { color: #c3c9d1; }
+  a.reversefootnote { color: $dm-muted; }
+
+  /* Bible-study styles (poetry, Hebrew, Greek, tables) */
+  .study-subtitle, .study-byline { color: $dm-muted; }
+  .poem .vnum, .scripture .vnum { color: $dm-accent; }
+  blockquote.scripture { border-left-color: $dm-accent; }
+  .scripture .src { color: $dm-muted; }
+  .word-table th, .compare-table th { background: #26364a; color: #d5e6f7; }
+}

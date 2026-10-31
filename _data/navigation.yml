@@ -5,5 +5,7 @@ main:
     url: /posts/
   - title: "Categories"
     url: /categories/
+  - title: "Verse Memory"
+    url: /tms/
   - title: "About"
     url: /about/

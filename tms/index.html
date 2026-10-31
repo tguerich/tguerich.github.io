@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Topical Memory System · Verse Holder</title>
+<style>
+:root{--bg:#fff;--subtle:#f2f2f0;--text:#1c1a17;--text2:#5f5b55;--border:#d4d0c8;--primary:#1c1a17;--onprimary:#fff;--info:#e8f1fb;--infob:#9ec2ea;
+--cream:#FBF8EE;--ink:#1C1A17;--soft:#5A554C;--rule:#C9BBA6;--frame:#5B4A3A;--serif:Georgia,'DejaVu Serif','Times New Roman',serif;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+--leather:linear-gradient(180deg,#4A3222 0%,#3B2618 55%,#2F1E13 100%);--wood:repeating-linear-gradient(92deg,#A8733F 0px,#B98349 6px,#9E6A38 11px,#B47D45 19px,#A06C3A 26px)}
+@media (prefers-color-scheme:dark){:root{--bg:#16181c;--subtle:#23262c;--text:#ececec;--text2:#a8a8a8;--border:#3a3e46;--primary:#ececec;--onprimary:#16181c;--info:#1d2a3a;--infob:#35567d}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.45}
+main{max-width:1040px;margin:0 auto;padding:16px 14px 48px}
+.back{font-size:15px;color:var(--text2)} .back a{color:inherit}
+h2{font-size:22px;margin:28px 0 12px}
+section>*+*{margin-top:12px}
+.btn{min-height:44px;padding:0 14px;font-size:16px;font-weight:600;font-family:var(--sans);border-radius:10px;cursor:pointer;border:1px solid var(--border);background:var(--subtle);color:var(--text)}
+.btn.primary{background:var(--primary);color:var(--onprimary);border-color:var(--primary)}
+.btn:disabled{opacity:.5;cursor:default}
+.mv{border:1px solid var(--frame);background:var(--cream);color:var(--ink)}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.seg button{min-height:40px;padding:0 16px;border:0;background:var(--subtle);color:var(--text);font-size:15px;cursor:pointer;font-family:var(--sans)}
+.seg button.on{background:var(--primary);color:var(--onprimary);font-weight:600}
+.callout{background:var(--info);border:1px solid var(--infob);border-radius:10px;padding:10px 14px}
+label.f{display:block;font-size:14px;font-weight:600;color:var(--text2)}
+label.f input,textarea{display:block;width:100%;margin-top:4px;min-height:44px;font-size:17px;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-family:var(--sans)}
+textarea{min-height:120px;font-size:19px;font-family:var(--serif)}
+.cardx{user-select:none;-webkit-user-select:none}
+</style>
+</head>
+<body>
+<main>
+<div class="back"><a href="/">← tguerich.github.io</a></div>
+<div style="text-align:center;padding:8px 0 4px">
+  <div style="font-size:34px;line-height:1.2;font-weight:600">Topical Memory System</div>
+  <div style="font-size:24px;line-height:1.3;font-weight:500;margin-top:4px">TMS</div>
+  <div style="font-size:15px;color:var(--text2);margin-top:4px">Version 0.1</div>
+</div>
+<section><h2>Holder</h2>
+  <div class="seg" id="seg"></div>
+  <div id="holder"></div>
+  <div id="notice"></div>
+  <p id="status"></p>
+</section>
+<section><h2>Verse box</h2>
+  <div id="box"></div>
+  <div class="row" id="boxbtns"></div>
+  <p>Each set lives in one place: Learn, Review, or the box. Each pocket holds one set; moving a set into a full pocket sends the set already there back to the box. A set moved to Learn puts its first card in the window.</p>
+</section>
+<section><h2>Blank cards: add your own</h2>
+  <label class="f">Set name (new or existing tab)<input id="fSet" placeholder="John 1"></label>
+  <label class="f">Topic (optional)<input id="fTopic" placeholder="The Word Became Flesh"></label>
+  <label class="f">Reference<input id="fRef" placeholder="John 1:1 or John 1:1-5"></label>
+  <div class="row"><button class="btn primary" id="bFetch">Get WEB text</button><button class="btn" id="bShowPaste">Type the text myself</button></div>
+  <div id="preview"></div>
+  <div id="pasteWrap" hidden><textarea id="fPaste" placeholder="Verse text, entered by you"></textarea><div style="margin-top:12px"><button class="btn" id="bAddMine" disabled>Add card with my text (marked “your text”)</button></div></div>
+  <label class="f">Add a whole chapter as cards (one card per verse)<input id="fChap" placeholder="John 1"></label>
+  <div><button class="btn" id="bChap">Add chapter</button></div>
+  <p id="msg"></p>
+  <p>New cards are numbered within their set, such as John 1 · 1. If the set name is left blank, a chapter becomes its own tab named after it.</p>
+</section>
+<section><h2>Sources</h2>
+  <p>Verse list and topics: The Navigators, Topical Memory System, <a href="https://www.navigators.org/resource/topical-memory-system/">navigators.org/resource/topical-memory-system</a></p>
+  <p>Scripture text: World English Bible (public domain), via <a href="https://bible-api.com">bible-api.com</a>. Cards marked “your text” were typed in by you.</p>
+</section>
+</main>
+<script>
+"use strict";
+const S = [
+  { id: "a", name: "A · Live the New Life", topics: [
+    ["Christ the Center", ["2 Corinthians 5:17", "Therefore if anyone is in Christ, he is a new creation. The old things have passed away. Behold, all things have become new."], ["Galatians 2:20", "I have been crucified with Christ, and it is no longer I that live, but Christ lives in me. That life which I now live in the flesh, I live by faith in the Son of God, who loved me, and gave himself up for me."]],
+    ["Obedience to Christ", ["Romans 12:1", "Therefore I urge you, brothers, by the mercies of God, to present your bodies a living sacrifice, holy, acceptable to God, which is your spiritual service."], ["John 14:21", "One who has my commandments, and keeps them, that person is one who loves me. One who loves me will be loved by my Father, and I will love him, and will reveal myself to him.”"]],
+    ["The Word", ["2 Timothy 3:16", "Every Scripture is God-breathed and profitable for teaching, for reproof, for correction, and for instruction in righteousness,"], ["Joshua 1:8", "This book of the law shall not depart from your mouth, but you shall meditate on it day and night, that you may observe to do according to all that is written in it; for then you shall make your way prosperous, and then you shall have good success."]],
+    ["Prayer", ["John 15:7", "If you remain in me, and my words remain in you, you will ask whatever you desire, and it will be done for you."], ["Philippians 4:6-7", "In nothing be anxious, but in everything, by prayer and petition with thanksgiving, let your requests be made known to God. And the peace of God, which surpasses all understanding, will guard your hearts and your thoughts in Christ Jesus."]],
+    ["Fellowship", ["Matthew 18:20", "For where two or three are gathered together in my name, there I am in the middle of them.”"], ["Hebrews 10:24-25", "Let us consider how to provoke one another to love and good works, not forsaking our own assembling together, as the custom of some is, but exhorting one another; and so much the more, as you see the Day approaching."]],
+    ["Witnessing", ["Matthew 4:19", "He said to them, “Come after me, and I will make you fishers for men.”"], ["Romans 1:16", "For I am not ashamed of the Good News of Christ, because it is the power of God for salvation for everyone who believes; for the Jew first, and also for the Greek."]],
+  ]},
+  { id: "b", name: "B · Proclaim Christ", topics: [
+    ["All Have Sinned", ["Romans 3:23", "for all have sinned, and fall short of the glory of God;"], ["Isaiah 53:6", "All we like sheep have gone astray. Everyone has turned to his own way; and Yahweh has laid on him the iniquity of us all."]],
+    ["Sin’s Penalty", ["Romans 6:23", "For the wages of sin is death, but the free gift of God is eternal life in Christ Jesus our Lord."], ["Hebrews 9:27", "Inasmuch as it is appointed for men to die once, and after this, judgment,"]],
+    ["Christ Paid the Penalty", ["Romans 5:8", "But God commends his own love toward us, in that while we were yet sinners, Christ died for us."], ["1 Peter 3:18", "Because Christ also suffered for sins once, the righteous for the unrighteous, that he might bring you to God; being put to death in the flesh, but made alive in the spirit;"]],
+    ["Salvation Is Not by Works", ["Ephesians 2:8-9", "for by grace you have been saved through faith, and that not of yourselves; it is the gift of God, not of works, that no one would boast."], ["Titus 3:5", "not by works of righteousness which we did ourselves, but according to his mercy, he saved us through the washing of regeneration and renewing by the Holy Spirit,"]],
+    ["Must Receive Christ", ["John 1:12", "But as many as received him, to them he gave the right to become God’s children, to those who believe in his name:"], ["Revelation 3:20", "Behold, I stand at the door and knock. If anyone hears my voice and opens the door, then I will come in to him, and will dine with him, and he with me."]],
+    ["Assurance of Salvation", ["1 John 5:13", "These things I have written to you who believe in the name of the Son of God, that you may know that you have eternal life, and that you may continue to believe in the name of the Son of God."], ["John 5:24", "“Most certainly I tell you, he who hears my word, and believes him who sent me, has eternal life, and doesn’t come into judgment, but has passed out of death into life."]],
+  ]},
+  { id: "c", name: "C · Rely on God’s Resources", topics: [
+    ["His Spirit", ["1 Corinthians 3:16", "Don’t you know that you are a temple of God, and that God’s Spirit lives in you?"], ["1 Corinthians 2:12", "But we received, not the spirit of the world, but the Spirit which is from God, that we might know the things that were freely given to us by God."]],
+    ["His Strength", ["Isaiah 41:10", "Don’t you be afraid, for I am with you. Don’t be dismayed, for I am your God. I will strengthen you. Yes, I will help you. Yes, I will uphold you with the right hand of my righteousness."], ["Philippians 4:13", "I can do all things through Christ, who strengthens me."]],
+    ["His Faithfulness", ["Lamentations 3:22-23", "It is because of Yahweh’s loving kindnesses that we are not consumed, because his compassion doesn’t fail. They are new every morning. Great is your faithfulness."], ["Numbers 23:19", "God is not a man, that he should lie, nor a son of man, that he should repent. Has he said, and will he not do it? Or has he spoken, and will he not make it good?"]],
+    ["His Peace", ["Isaiah 26:3", "You will keep whoever’s mind is steadfast in perfect peace, because he trusts in you."], ["1 Peter 5:7", "casting all your worries on him, because he cares for you."]],
+    ["His Provision", ["Romans 8:32", "He who didn’t spare his own Son, but delivered him up for us all, how would he not also with him freely give us all things?"], ["Philippians 4:19", "My God will supply every need of yours according to his riches in glory in Christ Jesus."]],
+    ["His Help in Temptation", ["Hebrews 2:18", "For in that he himself has suffered being tempted, he is able to help those who are tempted."], ["Psalm 119:9, 11", "How can a young man keep his way pure? By living according to your word. I have hidden your word in my heart, that I might not sin against you."]],
+  ]},
+  { id: "d", name: "D · Be Christ’s Disciple", topics: [
+    ["Put Christ First", ["Matthew 6:33", "But seek first God’s Kingdom, and his righteousness; and all these things will be given to you as well."], ["Luke 9:23", "He said to all, “If anyone desires to come after me, let him deny himself, take up his cross, and follow me."]],
+    ["Separate from the World", ["1 John 2:15-16", "Don’t love the world or the things that are in the world. If anyone loves the world, the Father’s love isn’t in him. For all that is in the world, the lust of the flesh, the lust of the eyes, and the pride of life, isn’t the Father’s, but is the world’s."], ["Romans 12:2", "Don’t be conformed to this world, but be transformed by the renewing of your mind, so that you may prove what is the good, well-pleasing, and perfect will of God."]],
+    ["Be Steadfast", ["1 Corinthians 15:58", "Therefore, my beloved brothers, be steadfast, immovable, always abounding in the Lord’s work, because you know that your labor is not in vain in the Lord."], ["Hebrews 12:3", "For consider him who has endured such contradiction of sinners against himself, that you don’t grow weary, fainting in your souls."]],
+    ["Serve Others", ["Mark 10:45", "For the Son of Man also came not to be served, but to serve, and to give his life as a ransom for many.”"], ["2 Corinthians 4:5", "For we don’t preach ourselves, but Christ Jesus as Lord, and ourselves as your servants for Jesus’ sake;"]],
+    ["Give Generously", ["Proverbs 3:9-10", "Honor Yahweh with your substance, with the first fruits of all your increase: so your barns will be filled with plenty, and your vats will overflow with new wine."], ["2 Corinthians 9:6-7", "Remember this: he who sows sparingly will also reap sparingly. He who sows bountifully will also reap bountifully. Let each man give according as he has determined in his heart; not grudgingly, or under compulsion; for God loves a cheerful giver."]],
+    ["Develop World Vision", ["Acts 1:8", "But you will receive power when the Holy Spirit has come upon you. You will be witnesses to me in Jerusalem, in all Judea and Samaria, and to the uttermost parts of the earth.”"], ["Matthew 28:19-20", "Go and make disciples of all nations, baptizing them in the name of the Father and of the Son and of the Holy Spirit, teaching them to observe all things that I commanded you. Behold, I am with you always, even to the end of the age.” Amen."]],
+  ]},
+  { id: "e", name: "E · Grow in Christlikeness", topics: [
+    ["Love", ["John 13:34-35", "A new commandment I give to you, that you love one another. Just as I have loved you, you also love one another. By this everyone will know that you are my disciples, if you have love for one another.”"], ["1 John 3:18", "My little children, let’s not love in word only, or with the tongue only, but in deed and truth."]],
+    ["Humility", ["Philippians 2:3-4", "doing nothing through rivalry or through conceit, but in humility, each counting others better than himself; each of you not just looking to his own things, but each of you also to the things of others."], ["1 Peter 5:5-6", "Likewise, you younger ones, be subject to the elder. Yes, all of you clothe yourselves with humility, to subject yourselves to one another; for “God resists the proud, but gives grace to the humble.” Humble yourselves therefore under the mighty hand of God, that he may exalt you in due time;"]],
+    ["Purity", ["Ephesians 5:3", "But sexual immorality, and all uncleanness, or covetousness, let it not even be mentioned among you, as becomes saints;"], ["1 Peter 2:11", "Beloved, I beg you as foreigners and pilgrims, to abstain from fleshly lusts, which war against the soul;"]],
+    ["Honesty", ["Leviticus 19:11", "“‘You shall not steal. “‘You shall not lie. “‘You shall not deceive one another."], ["Acts 24:16", "Herein I also practice always having a conscience void of offense toward God and men."]],
+    ["Faith", ["Hebrews 11:6", "Without faith it is impossible to be well pleasing to him, for he who comes to God must believe that he exists, and that he is a rewarder of those who seek him."], ["Romans 4:20-21", "Yet, looking to the promise of God, he didn’t waver through unbelief, but grew strong through faith, giving glory to God, and being fully assured that what he had promised, he was also able to perform."]],
+    ["Good Works", ["Galatians 6:9-10", "Let us not be weary in doing good, for we will reap in due season, if we don’t give up. So then, as we have opportunity, let’s do what is good toward all men, and especially toward those who are of the household of the faith."], ["Matthew 5:16", "Even so, let your light shine before men; that they may see your good works, and glorify your Father who is in heaven."]],
+  ]},
+];
+const TMS=[];const TMS_BY={};
+S.forEach(s=>{const L=s.id.toUpperCase();s.topics.forEach((t,ti)=>{[t[1],t[2]].forEach((v,vi)=>{const id=`${L}-${ti*2+vi+1}`;const c={id,set:L,label:id,topic:t[0],ref:v[0],text:v[1]};TMS.push(c);TMS_BY[id]=c;});});});
+const TMS_TABS=S.map(s=>({key:s.id.toUpperCase(),name:s.name}));
+const LS_KEY="tms-holder-v2",LS_KEY3="tms-holder-v3",LS_OLD_WINDOW="tms-holder-window-v1",LS_SIZE="tms-holder-size-v1";
+const keyOf=c=>TMS_BY[c.id]?c.set:"U:"+c.set;
+const setLabel=k=>k.startsWith("U:")?k.slice(2):`Series ${k}`;
+function loadLS(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function saveLS(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}}
+function shuffle(ids){const a=ids.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const clean=t=>t.replace(/\s+/g," ").trim();
+const apiUrl=ref=>"https://bible-api.com/"+encodeURIComponent(clean(ref)).replace(/%20/g,"+").replace(/%3A/gi,":").replace(/%2C/gi,",")+"?translation=web";
+async function getPassage(ref){const r=await fetch(apiUrl(ref));if(!r.ok)throw new Error(r.status===404?"reference not found":`server said ${r.status}`);const j=await r.json();if(!j||!Array.isArray(j.verses)||!j.verses.length)throw new Error("no verses returned");return j}
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $=id=>document.getElementById(id);
+
+const st={size:"large",custom:[],learnSet:"A",reviewSet:null,reviewOrder:[],notice:"",windowId:"A-1",saved:true,idx:{learn:0,review:0},lift:{learn:0,review:0},tab:"A",busy:false,msg:"",preview:null,showPaste:false};
+let noticeTimer=null,drag=null,dragP=null;
+
+// load
+(()=>{const s=loadLS(LS_SIZE);if(s==="normal"||s==="large"||s==="larger")st.size=s;
+const raw3=loadLS(LS_KEY3),raw=loadLS(LS_KEY);
+if(raw3){try{const d=JSON.parse(raw3);const cust=Array.isArray(d.custom)?d.custom:[];const keys=[...TMS_TABS.map(t=>t.key),...cust.map(c=>"U:"+c.set)];const okK=k=>k&&keys.indexOf(k)>=0?k:null;const L=okK(d.learnSet),R=okK(d.reviewSet);st.custom=cust;st.learnSet=L;st.reviewSet=R&&R!==L?R:null;st.reviewOrder=Array.isArray(d.reviewOrder)?d.reviewOrder:[];if(d.windowId&&(TMS_BY[d.windowId]||cust.some(c=>c.id===d.windowId)))st.windowId=d.windowId}catch(e){}}
+else if(raw){try{const d=JSON.parse(raw);const cust=Array.isArray(d.custom)?d.custom:[];const find=id=>TMS_BY[id]||cust.find(c=>c.id===id);const firstKey=ids=>{for(const id of ids||[]){const c=find(id);if(c)return keyOf(c)}return null};const L=firstKey(d.learn),R=firstKey(d.review);st.custom=cust;st.learnSet=L;st.reviewSet=R&&R!==L?R:null;if(d.windowId&&find(d.windowId))st.windowId=d.windowId}catch(e){}}
+else{const ow=loadLS(LS_OLD_WINDOW);if(ow&&TMS_BY[ow])st.windowId=ow}})();
+function persist(){st.saved=saveLS(LS_KEY3,JSON.stringify({custom:st.custom,learnSet:st.learnSet,reviewSet:st.reviewSet,reviewOrder:st.reviewOrder,windowId:st.windowId}))}
+
+const byId=id=>TMS_BY[id]||st.custom.find(c=>c.id===id);
+const customSets=()=>{const a=[];st.custom.forEach(c=>{if(a.indexOf(c.set)<0)a.push(c.set)});return a};
+const tabs=()=>[...TMS_TABS,...customSets().map(s=>({key:"U:"+s,name:s}))];
+const idsOf=k=>!k?[]:k.startsWith("U:")?st.custom.filter(c=>c.set===k.slice(2)).map(c=>c.id):TMS.filter(c=>c.set===k).map(c=>c.id);
+const reviewNat=()=>idsOf(st.reviewSet);
+const orderOk=()=>{const n=reviewNat();return st.reviewOrder.length===n.length&&st.reviewOrder.every(x=>n.indexOf(x)>=0)};
+const listOf=p=>p==="learn"?idsOf(st.learnSet):(orderOk()?st.reviewOrder:reviewNat());
+const locOf=k=>k===st.learnSet?"learn":k===st.reviewSet?"review":"box";
+const curIdx=p=>Math.min(st.idx[p],Math.max(0,listOf(p).length-1));
+function setNotice(t){st.notice=t;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>{st.notice="";renderNotice()},5000)}
+
+function moveSet(key,dest){let L=st.learnSet===key?null:st.learnSet,R=st.reviewSet===key?null:st.reviewSet;const notes=[];
+if(dest==="learn"){if(L)notes.push(`${setLabel(L)} returned to the box.`);L=key}
+if(dest==="review"){if(R)notes.push(`${setLabel(R)} returned to the box.`);R=key}
+const oldL=st.learnSet,oldR=st.reviewSet;st.learnSet=L;st.reviewSet=R;if(R!==oldR)st.reviewOrder=[];
+st.idx={learn:L===oldL?st.idx.learn:0,review:R===oldR?st.idx.review:0};st.lift={learn:0,review:0};
+if(dest==="learn"){const f=idsOf(key)[0];if(f)st.windowId=f}
+notes.push(`${setLabel(key)} is now ${dest==="box"?"in the box":`in the ${dest==="learn"?"Learn":"Review"} pocket`}.`);setNotice(notes.join(" "));update()}
+function swapSets(){const L=st.learnSet,R=st.reviewSet;st.learnSet=R;st.reviewSet=L;st.reviewOrder=[];st.idx={learn:0,review:0};st.lift={learn:0,review:0};setNotice(`Swapped: ${R?setLabel(R):"nothing"} in Learn, ${L?setLabel(L):"nothing"} in Review.`);update()}
+const moveBtns=k=>`<div style="display:flex;flex-wrap:wrap;gap:6px">${[["learn","To Learn"],["review","To Review"],["box","To Box"]].filter(o=>o[0]!==locOf(k)).map(o=>`<button type="button" class="btn mv" data-act="move" data-key="${esc(k)}" data-dest="${o[0]}">${o[1]}</button>`).join("")}</div>`;
+
+function sizes(){const z=st.size;return{fs:z==="larger"?28:z==="large"?23:16,hs:z==="larger"?24:z==="large"?20:16,bs:z==="normal"?15:19,bh:z==="normal"?44:52}}
+const tagline=c=>`${c.label} · ${c.mine?"your text":"WEB"}`;
+
+function pocketHTML(p){const list=listOf(p),i=curIdx(p),card=list.length?byId(list[i]):null,{fs,hs,bs,bh}=sizes(),set=p==="learn"?st.learnSet:st.reviewSet;
+let h=`<div style="flex:1 1 340px;min-width:0;display:flex;flex-direction:column;gap:10px"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;color:#EBDCC6;font-family:var(--serif)"><span style="font-size:20px;letter-spacing:2px;text-transform:uppercase">${p==="learn"?"Learn":"Review"}${set?" · "+esc(setLabel(set)):""}</span><span style="font-size:18px">${list.length?`${i+1} of ${list.length}`:"empty"}</span></div>`;
+if(set)h+=moveBtns(set);
+if(card){h+=`<div class="cardx" data-pocket="${p}" style="position:relative;overflow:hidden;isolation:isolate">
+<div class="card" data-drag="${p}" style="position:relative;z-index:1;background:var(--cream);color:var(--ink);font-family:var(--serif);border:2px solid var(--frame);border-radius:4px;padding:5px;touch-action:none;cursor:grab"><div style="border:1px solid var(--rule);padding:14px 18px 12px">
+<div class="head" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 16px;border-bottom:1px solid var(--rule);padding-bottom:10px"><span style="font-style:italic;font-size:${hs}px;color:var(--soft)">${esc(card.topic)}</span><span style="font-weight:700;font-size:${hs+2}px">${esc(card.ref)}</span></div>
+<div class="vtext" style="font-size:${fs}px;line-height:1.5;padding:22px 0 26px;visibility:hidden">${esc(card.text)}</div>
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px;border-top:1px solid var(--rule);padding-top:10px"><span style="font-weight:700;font-size:${hs}px">${esc(card.ref)}</span><span style="font-size:${Math.max(13,hs-4)}px;color:var(--soft)">${esc(tagline(card))}</span></div></div></div>
+<div class="cover" data-drag="${p}" style="position:absolute;left:0;right:0;top:70px;bottom:0;z-index:2;transition:transform .35s ease;background-color:#3B2618;background:var(--leather);touch-action:none;cursor:grab;border-radius:6px 6px 14px 14px;border:2px solid #24170E;box-shadow:inset 0 0 0 3px #4F3726,inset 0 0 0 4px #7A5A40;padding:16px 14px 18px;color:#EBDCC6;font-family:var(--serif)"><div style="height:6px;margin:-10px -8px 12px;border-top:2px dashed #8C6A4C;opacity:.8"></div><div class="hint" style="text-align:center;font-size:18px;letter-spacing:1px;color:#D9C4A5"></div></div></div>`;
+const btn=(act,t,main)=>`<button type="button" class="btn${main?" primary":""}" data-act="${act}" data-p="${p}" style="flex:1 1 0;min-width:0;min-height:${bh}px;padding:0 6px;font-size:${bs}px">${t}</button>`;
+h+=`<div style="background:var(--bg);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;gap:8px">${btn("prev","◀ Prev")}${btn("slide",'<span class="slidelbl">Check</span>',true)}${btn("next","Next ▶")}</div><div class="row">`;
+if(p==="learn")h+=`<button class="btn" data-act="window" data-id="${esc(card.id)}">Put in window</button>`;
+if(p==="review"&&list.length>1)h+=`<button class="btn" data-act="shuffle">Shuffle</button>`;
+if(p==="review"&&orderOk())h+=`<button class="btn" data-act="orig">Original order</button>`;
+if(st.learnSet&&st.reviewSet)h+=`<button class="btn" data-act="swap">Swap Learn ⇄ Review</button>`;
+h+=`</div></div>`}
+else h+=`<div style="border:2px dashed #8C6A4C;border-radius:10px;padding:18px;color:#D9C4A5;font-family:var(--serif);font-size:19px">${p==="learn"?"Empty. Open a set’s tab in the verse box and press To Learn.":"Empty. Send a set you know here with To Review."}</div>`;
+return h+`</div>`}
+
+function geom(p){const w=document.querySelector(`.cardx[data-pocket="${p}"]`);if(!w)return null;const c=w.querySelector(".card"),hd=w.querySelector(".head");const head=hd.offsetTop+hd.offsetHeight+6;return{w,cover:w.querySelector(".cover"),head,max:Math.max(0,c.offsetHeight-head)}}
+function applyLift(p){const g=geom(p);if(!g)return;const l=st.lift[p],dragging=dragP===p,rev=l>g.max/2;
+g.cover.style.top=g.head+"px";g.cover.style.transform=`translateY(${l}px)`;g.cover.style.transition=dragging?"none":"transform .35s ease";
+g.w.querySelector(".vtext").style.visibility=l>0||dragging?"visible":"hidden";
+g.w.querySelector(".hint").textContent=rev?"▼ Tap or drag down to slide back":"▲ Say it, then tap or drag up to check";
+g.w.querySelectorAll("[data-drag]").forEach(e=>e.style.cursor=dragging?"grabbing":"grab");
+const lb=g.w.parentNode.querySelector(".slidelbl");if(lb)lb.textContent=rev?"Hide":"Check"}
+
+function renderSeg(){$("seg").innerHTML=[["normal","Normal"],["large","Large"],["larger","Larger"]].map(o=>`<button type="button" data-size="${o[0]}" class="${st.size===o[0]?"on":""}">${o[1]}</button>`).join("")}
+function renderHolder(){const win=byId(st.windowId),{fs,hs}=sizes();let h=`<div style="background:var(--leather);border-radius:18px;border:2px solid #24170E;box-shadow:inset 0 0 0 4px #4F3726,inset 0 0 0 5px #7A5A40;padding:18px 14px 20px;display:flex;flex-direction:column;gap:18px">`;
+if(win)h+=`<div><div style="font-size:16px;letter-spacing:2px;text-transform:uppercase;color:#BFA582;font-family:var(--serif);margin-bottom:6px">Window · newest verse</div><div style="background:rgba(235,245,250,.12);border:1px solid rgba(255,255,255,.45);border-radius:6px;padding:8px"><div style="background:var(--cream);color:var(--ink);padding:10px 14px;border-radius:2px;border:1px solid var(--rule);font-family:var(--serif)"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;font-size:${hs-2}px"><span style="font-style:italic;color:var(--soft)">${esc(win.topic)}</span><span style="font-weight:700">${esc(win.ref)}</span></div><div style="font-size:${fs-3}px;line-height:1.45;margin-top:8px">${esc(win.text)}</div><div style="text-align:right;font-size:${Math.max(12,hs-6)}px;color:var(--soft);margin-top:6px">${esc(tagline(win))}</div></div></div></div>`;
+h+=`<div style="display:flex;flex-wrap:wrap;gap:18px">${pocketHTML("learn")}${pocketHTML("review")}</div></div>`;$("holder").innerHTML=h;applyLift("learn");applyLift("review");
+$("status").textContent=`Learn pocket ${listOf("learn").length} · Review pocket ${listOf("review").length} · ${st.custom.length} cards of your own. ${st.saved?"Saved on this device.":"This browser blocks storage, so changes last until the page is closed."}`}
+function renderNotice(){$("notice").innerHTML=st.notice?`<div class="callout">${esc(st.notice)}</div>`:""}
+function renderBox(){const T=tabs();const tab=st.tab;const tc=tab.startsWith("U:")?st.custom.filter(c=>c.set===tab.slice(2)):TMS.filter(c=>c.set===tab);const lc=locOf(tab);
+let h=`<div style="background:var(--wood);border-radius:12px;border:3px solid #6B4423;box-shadow:inset 0 2px 0 rgba(255,255,255,.25),inset 0 -3px 0 rgba(0,0,0,.25);padding:14px 12px 16px"><div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">`;
+T.forEach(t=>{const on=t.key===tab,l=locOf(t.key);h+=`<div role="button" tabindex="0" data-tab="${esc(t.key)}" style="cursor:pointer;padding:8px 14px;border-radius:10px 10px 2px 2px;font-family:var(--serif);font-size:19px;background:${on?"var(--cream)":"#E8DCC3"};color:var(--ink);border:1px solid ${on?"var(--frame)":"#B79B74"};font-weight:${on?700:400};box-shadow:${on?"0 2px 0 #6B4423":"none"};display:flex;align-items:center;gap:6px">${esc(t.key.startsWith("U:")?t.name:t.key)}${l!=="box"?`<span style="font-size:13px;font-weight:600;font-family:var(--sans);background:#3B2618;color:#F3E6CF;border-radius:9999px;padding:2px 8px">${l==="learn"?"Learn":"Review"}</span>`:""}</div>`});
+h+=`</div><div style="background:rgba(43,26,12,.35);border-radius:8px;padding:10px"><div style="color:#FFF4E2;font-family:var(--serif);font-size:20px;margin-bottom:6px">${esc((T.find(t=>t.key===tab)||T[0]).name)} · ${tc.length} cards · ${lc==="box"?"in the box":lc==="learn"?"in the Learn pocket":"in the Review pocket"}</div><div style="margin-bottom:10px">${moveBtns(tab)}</div><div style="max-height:460px;overflow-y:auto;display:flex;flex-direction:column;gap:6px">`;
+tc.forEach(c=>{h+=`<div style="background:var(--cream);color:var(--ink);border-radius:4px;border:1px solid var(--rule);padding:10px 12px;font-family:var(--serif)"><span style="display:block;font-size:19px"><b>${esc(c.ref)}</b> <i style="color:var(--soft)">${esc(c.topic)}</i></span><span style="display:block;font-size:16px;color:var(--soft)">${esc(c.label)}${c.mine?" · your text":""}</span></div>`});
+$("box").innerHTML=h+`</div></div></div>`;$("boxbtns").innerHTML=tab.startsWith("U:")?`<button class="btn" data-act="delset">Remove this set</button>`:""}
+function renderForm(){$("fSet").placeholder=customSets()[0]||"John 1";$("bFetch").textContent=st.busy?"Getting text…":"Get WEB text";$("bFetch").disabled=st.busy;$("bChap").textContent=st.busy?"Getting chapter…":"Add chapter";$("bChap").disabled=st.busy;
+$("preview").innerHTML=st.preview?`<div style="background:var(--cream);color:var(--ink);border:1px solid var(--rule);border-radius:4px;padding:12px 16px;font-family:var(--serif)"><div style="font-weight:700;font-size:20px">${esc(st.preview.ref)}</div><div style="font-size:20px;line-height:1.5;margin-top:6px">${esc(st.preview.text)}</div></div><div style="margin-top:12px"><button class="btn primary" data-act="addprev">Add ${esc(st.preview.ref)} as a card</button></div>`:"";
+$("pasteWrap").hidden=!st.showPaste;$("bAddMine").disabled=!clean($("fPaste").value)||!clean($("fRef").value);$("msg").textContent=st.msg}
+function update(){persist();renderSeg();renderHolder();renderNotice();renderBox();renderForm()}
+
+const goTo=(p,n)=>{st.idx[p]=n;st.lift[p]=0};
+function step(p,d){const n=listOf(p).length;if(!n)return;goTo(p,(curIdx(p)+d+n)%n);renderHolder()}
+const setName=()=>clean($("fSet").value)||"My Verses";
+async function fetchOne(){const ref=$("fRef").value;if(!clean(ref)){st.msg="Type a reference first, like John 1:1 or John 1:1-5.";renderForm();return}
+st.busy=true;st.msg="";st.preview=null;renderForm();
+try{const j=await getPassage(ref);st.preview={ref:j.reference,text:clean(j.verses.map(v=>v.text).join(" "))};st.showPaste=false}
+catch(err){st.msg=`Couldn’t get the text from bible-api.com (${err instanceof Error?err.message:"blocked"}). You can type or paste the verse yourself below.`;st.showPaste=true}
+st.busy=false;renderForm()}
+function addCard(ref,text,mine){const set=setName(),n=st.custom.filter(c=>c.set===set).length+1;
+st.custom.push({id:`U:${set}:${Date.now()}:${n}`,set,label:`${set} · ${n}`,topic:clean($("fTopic").value)||set,ref,text,mine});
+st.tab="U:"+set;st.msg=`Added ${ref} to the “${set}” tab as card ${n}.`;st.preview=null;$("fRef").value="";$("fPaste").value="";st.showPaste=false;update()}
+async function fetchChapter(){const ch=clean($("fChap").value);if(!ch){st.msg="Type a book and chapter, like John 1.";renderForm();return}
+st.busy=true;st.msg="";renderForm();
+try{const j=await getPassage(ch);const set=clean($("fSet").value)||j.reference;const base=st.custom.filter(c=>c.set===set).length,stamp=Date.now(),topic=clean($("fTopic").value)||set;
+const cards=j.verses.map((v,i)=>({id:`U:${set}:${stamp}:${base+i+1}`,set,label:`${set} · ${base+i+1}`,topic,ref:`${v.book_name} ${v.chapter}:${v.verse}`,text:clean(v.text)}));
+st.custom.push(...cards);st.tab="U:"+set;st.msg=`Added ${cards.length} cards for ${j.reference} under the “${set}” tab.`;$("fChap").value="";st.busy=false;update();return}
+catch(err){st.msg=`Couldn’t get ${ch} from bible-api.com (${err instanceof Error?err.message:"blocked"}). Chapters need the live text; single verses can be typed in by hand instead.`}
+st.busy=false;renderForm()}
+function deleteCustomSet(set){const ids=st.custom.filter(c=>c.set===set).map(c=>c.id);st.custom=st.custom.filter(c=>c.set!==set);if(ids.indexOf(st.windowId)>=0)st.windowId="A-1";if(st.learnSet==="U:"+set)st.learnSet=null;if(st.reviewSet==="U:"+set){st.reviewSet=null;st.reviewOrder=[]}st.tab="A";update()}
+
+document.addEventListener("click",e=>{const sz=e.target.closest("[data-size]");if(sz){st.size=sz.dataset.size;saveLS(LS_SIZE,st.size);update();return}
+const tb=e.target.closest("[data-tab]");if(tb){st.tab=tb.dataset.tab;renderBox();return}
+const b=e.target.closest("[data-act]");if(!b)return;const p=b.dataset.p;
+switch(b.dataset.act){case"move":moveSet(b.dataset.key,b.dataset.dest);break;case"prev":step(p,-1);break;case"next":step(p,1);break;
+case"slide":{const g=geom(p);if(g){st.lift[p]=st.lift[p]>g.max/2?0:g.max;applyLift(p)}break}
+case"window":st.windowId=b.dataset.id;update();break;case"shuffle":st.reviewOrder=shuffle(reviewNat());goTo("review",0);update();break;
+case"orig":st.reviewOrder=[];goTo("review",0);update();break;case"swap":swapSets();break;case"delset":deleteCustomSet(st.tab.slice(2));break;
+case"addprev":if(st.preview)addCard(st.preview.ref,st.preview.text,false);break}});
+document.addEventListener("keydown",e=>{const tb=e.target.closest&&e.target.closest("[data-tab]");if(tb&&(e.key==="Enter"||e.key===" ")){e.preventDefault();tb.click()}});
+const holder=$("holder");
+holder.addEventListener("pointerdown",e=>{const t=e.target.closest("[data-drag]");if(!t)return;const p=t.dataset.drag;drag={p,y:e.clientY,start:st.lift[p],moved:false};dragP=p;try{t.setPointerCapture(e.pointerId)}catch(x){}applyLift(p)});
+holder.addEventListener("pointermove",e=>{if(!drag)return;const dy=drag.y-e.clientY;if(Math.abs(dy)>6)drag.moved=true;const g=geom(drag.p);st.lift[drag.p]=Math.min(g?g.max:0,Math.max(0,drag.start+dy));applyLift(drag.p)});
+function onUp(){const d=drag;drag=null;dragP=null;if(!d)return;const g=geom(d.p),m=g?g.max:0;if(!d.moved)st.lift[d.p]=d.start>m/2?0:m;else st.lift[d.p]=st.lift[d.p]>m/2?m:0;applyLift(d.p)}
+holder.addEventListener("pointerup",onUp);holder.addEventListener("pointercancel",onUp);
+window.addEventListener("resize",()=>{["learn","review"].forEach(p=>{const g=geom(p);if(g&&st.lift[p]>0)st.lift[p]=st.lift[p]>g.max/2||st.lift[p]>g.max?g.max:st.lift[p];applyLift(p)})});
+$("bFetch").onclick=()=>{fetchOne()};$("bChap").onclick=()=>{fetchChapter()};$("bShowPaste").onclick=()=>{st.showPaste=true;renderForm()};
+$("bAddMine").onclick=()=>addCard(clean($("fRef").value),clean($("fPaste").value),true);
+$("fRef").addEventListener("input",()=>{st.preview=null;renderForm()});$("fPaste").addEventListener("input",renderForm);
+update();
+</script>
+</body>
+</html>

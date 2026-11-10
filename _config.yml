@@ -41,6 +41,7 @@ markdown: kramdown
 highlighter: rouge
 permalink: /:categories/:title/
 timezone: America/Chicago
+future: true
 paginate: 5
 paginate_path: /page:num/
 
@@ -67,6 +68,11 @@ tag_archive:
   type: liquid
   path: /tags/
 
+collections:
+  strips:
+    output: true
+    permalink: /strips/:slug/
+
 defaults:
   - scope:
       path: ""
@@ -84,3 +90,13 @@ defaults:
     values:
       layout: single
       author_profile: true
+  - scope:
+      path: ""
+      type: strips
+    values:
+      layout: single
+      author_profile: false
+      read_time: false
+      share: false
+      show_date: true
+      classes: wide

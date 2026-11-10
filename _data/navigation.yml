@@ -7,5 +7,7 @@ main:
     url: /categories/
   - title: "Verse Memory"
     url: /tms/
+  - title: "Strips"
+    url: /strips/
   - title: "About"
     url: /about/

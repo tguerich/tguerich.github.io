@@ -28,6 +28,10 @@ $greek-font: "SBL Greek", "Gentium Plus", "Noto Serif", "Times New Roman", serif
 .study-subtitle { font-size: 1.1em; color: #555; margin-bottom: 0.2em; }
 .study-byline { font-size: 0.9em; color: #555; }
 
+.strip { margin: 0 0 1.5em; }
+.strip img { width: 100%; height: auto; background: #fff; }
+
+
 /* Psalm text set as poetry: q1 lines at the margin, q2 lines indented,
    long lines wrap with a hanging indent (like the Word document). */
 .poem { margin: 1em 0 1.5em; font-family: Georgia, "Times New Roman", serif; }

@@ -31,6 +31,10 @@ $greek-font: "SBL Greek", "Gentium Plus", "Noto Serif", "Times New Roman", serif
 .strip { margin: 0 0 1.5em; }
 .strip img { width: 100%; height: auto; background: #fff; }
 
+.extra-frames { margin: 0 0 2em; max-width: 42em; }
+.extra-frames__title { font-size: 1.15em; margin: 0 0 0.35em; }
+.extra-frames__text { white-space: pre-wrap; font-family: inherit; line-height: 1.55; margin: 0; }
+
 
 /* Psalm text set as poetry: q1 lines at the margin, q2 lines indented,
    long lines wrap with a hanging indent (like the Word document). */

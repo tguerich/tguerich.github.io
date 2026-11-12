@@ -4,6 +4,8 @@ excerpt: "Christmas animated special? With jazz? No, Elon."
 date: 2026-11-11
 header:
   teaser: /assets/images/strips/break-room-christmas-special-11-11.jpg
+extra_frames: "Extra Frames \n2. \"Gee, Tony, was that really Elon?\"\n3. \"Afraid so, Mort. \"\n4. (\"I'll see you in the funny paper, \n          Mr. Musk.\")"
+
 ---
 
 <figure class="strip">

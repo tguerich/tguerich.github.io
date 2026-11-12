@@ -4,6 +4,8 @@ excerpt: "Hi guys. You'll have that calendar ready by Christmas, right?"
 date: 2026-11-12
 header:
   teaser: /assets/images/strips/break-room-calendar-11-12.jpg
+extra_frames: "Extra Frames \n2. \"No. Production deadline is past.\"\n3. \"Pity. Bye! \"\n4. \"I said I'd see him in the funny paper\n       Nice work, Mort. \""
+
 ---
 
 <figure class="strip">

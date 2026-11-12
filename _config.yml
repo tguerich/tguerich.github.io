@@ -97,7 +97,7 @@ defaults:
       path: ""
       type: strips
     values:
-      layout: single
+      layout: strip
       author_profile: false
       read_time: false
       share: false

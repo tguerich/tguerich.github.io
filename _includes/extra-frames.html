@@ -1,0 +1,12 @@
+{% if page.extra_frames %}
+{% capture xf_label %}Extra Frames 
+{% endcapture %}
+{% assign xf_body = page.extra_frames %}
+{% if page.extra_frames contains xf_label %}
+  {% assign xf_body = page.extra_frames | remove_first: xf_label %}
+{% endif %}
+<section class="extra-frames">
+  <h2 class="extra-frames__title">Extra Frames</h2>
+  <div class="extra-frames__text">{{ xf_body | escape }}</div>
+</section>
+{% endif %}

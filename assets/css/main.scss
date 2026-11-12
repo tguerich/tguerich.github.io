@@ -193,3 +193,6 @@ $dm-accent: #9cc3ea;        // replaces the #2e4a6b navy used in light mode
   .scripture .src { color: $dm-muted; }
   .word-table th, .compare-table th { background: #26364a; color: #d5e6f7; }
 }
+.latest-strip { margin: 1em 0 2.5em; }
+.latest-strip img { width: 100%; max-width: 900px; height: auto; background: #fff; }
+.latest-strip__date { color: #888; margin: 0 0 .5em; }

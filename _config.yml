@@ -72,6 +72,9 @@ collections:
   strips:
     output: true
     permalink: /strips/:slug/
+  resources:
+    output: true
+    permalink: /resources/:title/
 
 defaults:
   - scope:
@@ -100,3 +103,13 @@ defaults:
       share: false
       show_date: true
       classes: wide
+  - scope:
+      path: ""
+      type: resources
+    values:
+      layout: single
+      author_profile: true
+      read_time: true
+      share: false
+      related: true
+      show_date: true

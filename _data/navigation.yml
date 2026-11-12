@@ -9,5 +9,7 @@ main:
     url: /tms/
   - title: "Strips"
     url: /strips/
+  - title: "Resources"
+    url: /resources/
   - title: "About"
     url: /about/
